@@ -1,0 +1,13 @@
+Plugin Name: Invite
+Author: Andrew Billits
+
+Files:
+----------------------------------------------------------------------
+invite.php - goes in /wp-content/mu-plugins
+
+Instructions:
+----------------------------------------------------------------------
+1) Place the files in the specified directories
+2) You can customize the email text at the top of the plugin.
+
+Please note that your server must support cURL. If you are not sure if your server supports cURL you may use the test script included with this package. Just simply upload curl-test.php to your PHP enabled server.
