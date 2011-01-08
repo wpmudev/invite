@@ -63,7 +63,7 @@ $invite_incsub_authcode = "";
 
 add_action('admin_menu', 'invite_plug_pages');
 add_action('network_admin_menu', 'invite_plug_pages');
-add_action('init', 'custom_content_dashboard_init');
+add_action('init', 'invite_init');
 
 //------------------------------------------------------------------------//
 //---Functions------------------------------------------------------------//
