@@ -1,12 +1,13 @@
 <?php
 /*
 Plugin Name: Invite
-Plugin URI: 
-Description:
-Author: Andrew Billits
-Version: 1.0.9
+Plugin URI: http://premium.wpmudev.org/project/invite
+Description: Allow your users to invite - via email - their friends and colleagues to check out their blog and sign up at your site!
+Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
+Version: 1.1.0
 Author URI:
 WDP ID: 9
+Network: true
 */
 
 /* 
@@ -61,14 +62,23 @@ $invite_incsub_authcode = "";
 //------------------------------------------------------------------------//
 
 add_action('admin_menu', 'invite_plug_pages');
+add_action('network_admin_menu', 'invite_plug_pages');
+add_action('init', 'custom_content_dashboard_init');
 
 //------------------------------------------------------------------------//
 //---Functions------------------------------------------------------------//
 //------------------------------------------------------------------------//
 
+function invite_init() {
+	if ( !is_multisite() )
+		exit( 'The Invite plugin is only compatible with WordPress Multisite.' );
+		
+	load_plugin_textdomain('invite', false, dirname(plugin_basename(__FILE__)).'/languages');
+}
+
 function invite_plug_pages() {
 	global $wpdb, $wp_roles, $current_user;
-	add_submenu_page('users.php', 'Invites', 'Invites', 1, 'invite_main', 'invite_page_main_output');
+	add_submenu_page('users.php', __('Invites', 'invite'), __('Invites', 'invite'), 1, 'invite_main', 'invite_page_main_output');
 }
 
 function invite_send_email($tmp_invite_email, $tmp_invite_message) {
@@ -140,20 +150,20 @@ function invite_page_main_output() {
 	global $wpdb, $wp_roles, $current_user, $current_site, $invite_contact_importer, $invite_incsub_gateway, $invite_incsub_authcode, $invite_incsub_gateway_encryption;
 
 	if (isset($_GET['updated'])) {
-		?><div id="message" class="updated fade"><p><?php _e('' . urldecode($_GET['updatedmsg']) . '') ?></p></div><?php
+		?><div id="message" class="updated fade"><p><?php _e(urldecode($_GET['updatedmsg']), 'invite') ?></p></div><?php
 	}
 	echo '<div class="wrap">';
 	switch( $_GET[ 'action' ] ) {
 		//---------------------------------------------------//
 		default:
 		?>
-			<h2><?php _e('Send Invites') ?></h2>
-            <P><?php _e('Send your colleagues and friends an invitation to signup at') ?> <?php echo $current_site->site_name; ?>
+			<h2><?php _e('Send Invites', 'invite') ?></h2>
+            <P><?php _e('Send your colleagues and friends an invitation to signup at', 'invite') ?> <?php echo $current_site->site_name; ?>
             <?php
             if ($invite_contact_importer == "enabled"){
                 ?>
                 <br /><br />
-               <strong> <?php _e('Do you use GMail, Hotmail, Lycos, MSN or Yahoo for email?') ?> <br /> <a href="users.php?page=invite_main&action=importer"><?php _e('Click here') ?></a> <?php _e('to easily import email addresses from those accounts (completely safely!)') ?></strong><br /><br />
+               <strong> <?php _e('Do you use GMail, Hotmail, Lycos, MSN or Yahoo for email?', 'invite') ?> <br /> <a href="users.php?page=invite_main&action=importer"><?php _e('Click here', 'invite') ?></a> <?php _e('to easily import email addresses from those accounts (completely safely!)', 'invite') ?></strong><br /><br />
                 <?php
             }
             ?>
@@ -161,25 +171,25 @@ function invite_page_main_output() {
             <form method="post" action="users.php?page=invite_main&action=process">
             <table class="form-table">
             <tr valign="top">
-            <th scope="row"><?php _e('Special Message:') ?></th>
+            <th scope="row"><?php _e('Special Message:', 'invite') ?></th>
             <td>
             <textarea name="invite_message" id="invite_message" rows='3' cols='45' style="width: 95%" wrap="soft"></textarea>
-            <br /><?php _e('Optional. Include a message with your invitations.') ?></td>
+            <br /><?php _e('Optional. Include a message with your invitations.', 'invite') ?></td>
             </tr>
             <tr valign="top">
-            <th scope="row"><?php _e('Email Addresses:') ?></th>
+            <th scope="row"><?php _e('Email Addresses:', 'invite') ?></th>
             <td>
 			<?php
             $tmp_invite_imported_emails = $_POST['invite_imported_emails'];
             $tmp_invite_imported_emails = str_replace( ",", ', ', $tmp_invite_imported_emails );
             ?>
             <textarea name="invite_emails" id="invite_content" rows='8' cols='45' style="width: 95%" wrap="virtual"><?php echo $tmp_invite_imported_emails; ?></textarea>
-            <br /><?php _e('Place a comma between each email address (ex john@site.com, bob@site.com).') ?></td>
+            <br /><?php _e('Place a comma between each email address (ex john@site.com, bob@site.com).', 'invite') ?></td>
             </tr>
             </table>
             
             <p class="submit">
-            <input type="submit" name="Submit" value="<?php _e('Send Invite(s)') ?>" />
+            <input type="submit" name="Submit" value="<?php _e('Send Invite(s)', 'invite') ?>" />
             </p>
             </form>
 		<?php
@@ -187,7 +197,7 @@ function invite_page_main_output() {
 		//---------------------------------------------------//
 		case "importer":
 		?>
-			<h2><?php _e('Import Contacts') ?></h2>
+			<h2><?php _e('Import Contacts', 'invite') ?></h2>
             <?php
 			//check gateway authorization
 			$tmp_curl_url = $invite_incsub_gateway . '/auth/?auth_code=' . $invite_incsub_authcode;
@@ -204,12 +214,12 @@ function invite_page_main_output() {
 			if ($tmp_gateway_auth == 'valid'){
 			//---------------------------------------------------//
 			?>
-			<p><?php _e('Import a list of your contacts from your web-based email account.') ?></p>
-			<p><?php _e('After this you can choose which ones you want to send invites too.') ?></p>
+			<p><?php _e('Import a list of your contacts from your web-based email account.', 'invite') ?></p>
+			<p><?php _e('After this you can choose which ones you want to send invites too.', 'invite') ?></p>
             <form method="post" action="users.php?page=invite_main&action=import_process">
             <table class="form-table">
             <tr valign="top">
-            <th scope="row"><?php _e('Sevice:') ?></th>
+            <th scope="row"><?php _e('Sevice:', 'invite') ?></th>
             <td>
             <select name="invite_service" id="invite_service">
                 <option value="gmail">GMail</option>
@@ -218,16 +228,16 @@ function invite_page_main_output() {
                 <option value="msn">MSN</option>
                 <option value="yahoo">Yahoo</option>
             </select>
-            <br /><?php _e('Please choose your email service.') ?></td>
+            <br /><?php _e('Please choose your email service.', 'invite') ?></td>
             </tr>
             <tr valign="top">
-            <th scope="row"><?php _e('Email:') ?></th>
+            <th scope="row"><?php _e('Email:', 'invite') ?></th>
             <td>
             <input name="invite_email" type="text" id="invite_email" style="width: 95%" value="" size="45" />
-            <br /><?php _e('ex: john@hotmail.com') ?></td>
+            <br /><?php _e('ex: john@hotmail.com', 'invite') ?></td>
             </tr>
             <tr valign="top">
-            <th scope="row"><?php _e('Password:') ?></th>
+            <th scope="row"><?php _e('Password:', 'invite') ?></th>
             <td>
            <input name="invite_password" type="password" id="invite_password" style="width: 95%" value="" size="45" />
             <br /><?php //_e('') ?></td>
@@ -235,7 +245,7 @@ function invite_page_main_output() {
             </table>
             
             <p class="submit">
-            <input type="submit" name="Submit" value="<?php _e('Import Email Addresses') ?>" />
+            <input type="submit" name="Submit" value="<?php _e('Import Email Addresses', 'invite') ?>" />
             </p>
             </form>
             <?php
@@ -243,7 +253,7 @@ function invite_page_main_output() {
 			} else {
 				//gateway info invalid
 			?>
-            <p><?php _e('This feature is temporarily unavaiable.') ?></p>
+            <p><?php _e('This feature is temporarily unavaiable.', 'invite') ?></p>
 			<?php
 			}
 			?>
@@ -252,7 +262,7 @@ function invite_page_main_output() {
 		//---------------------------------------------------//
 		case "import_process":
 			?>
-            <h2><?php _e('Import Contacts') ?></h2>
+            <h2><?php _e('Import Contacts', 'invite') ?></h2>
             <?php
 			$tmp_invite_email = $_POST['invite_email'];
 			$tmp_invite_password = $_POST['invite_password'];
@@ -279,16 +289,16 @@ function invite_page_main_output() {
 			$tmp_email_data = $tmp_returned_data;
 			if ($tmp_email_data == 'failed' || $tmp_email_data == ''){
 				?>
-				<p><?php _e('There was a problem while trying to import your contacts. Please check your information and try again. <a href="users.php?page=invite_main&action=importer">Click here</a> to try again.') ?></p>
+				<p><?php _e('There was a problem while trying to import your contacts. Please check your information and try again. <a href="users.php?page=invite_main&action=importer">Click here</a> to try again.', 'invite') ?></p>
                 <?php
 			} else {
 				?>
-                <p><?php _e('Email addresses successfully imported!') ?></p>
+                <p><?php _e('Email addresses successfully imported!', 'invite') ?></p>
                 <form method="post" action="users.php?page=invite_main">
 				<input name="invite_imported_emails" type="hidden" id="invite_imported_emails"value="<?php echo $tmp_email_data; ?>"/>
                 
                 <p class="submit">
-                <input type="submit" name="Submit" value="<?php _e('Continue') ?>" />
+                <input type="submit" name="Submit" value="<?php _e('Continue', 'invite') ?>" />
                 </p>
                 </form>
 				<?php
@@ -302,7 +312,7 @@ function invite_page_main_output() {
 			$tmp_invite_emails = str_replace( " ", '', $tmp_invite_emails );
 			$tmp_invite_emails_array = explode(",", $tmp_invite_emails);
 			?>
-			<p><?php _e('Sending Invite(s)!') ?></p>
+			<p><?php _e('Sending Invite(s)!', 'invite') ?></p>
 			<?php
 			foreach ($tmp_invite_emails_array as $tmp_email){
 				invite_send_email($tmp_email, $tmp_invite_message);
@@ -322,4 +332,12 @@ function invite_page_main_output() {
 	echo '</div>';
 }
 
-?>
+if ( !function_exists( 'wdp_un_check' ) ) {
+	add_action( 'admin_notices', 'wdp_un_check', 5 );
+	add_action( 'network_admin_notices', 'wdp_un_check', 5 );
+
+	function wdp_un_check() {
+		if ( !class_exists( 'WPMUDEV_Update_Notifications' ) && current_user_can( 'edit_users' ) )
+			echo '<div class="error fade"><p>' . __('Please install the latest version of <a href="http://premium.wpmudev.org/project/update-notifications/" title="Download Now &raquo;">our free Update Notifications plugin</a> which helps you stay up-to-date with the most stable, secure versions of WPMU DEV themes and plugins. <a href="http://premium.wpmudev.org/wpmu-dev/update-notifications-plugin-information/">More information &raquo;</a>', 'wpmudev') . '</a></p></div>';
+	}
+}
