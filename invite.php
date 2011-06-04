@@ -4,7 +4,7 @@ Plugin Name: Invite
 Plugin URI: http://premium.wpmudev.org/project/invite
 Description: Allow your users to invite - via email - their friends and colleagues to check out their blog and sign up at your site!
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.1.0
+Version: 1.1.1
 Author URI:
 WDP ID: 9
 Network: true
@@ -90,7 +90,7 @@ function invite_send_email($tmp_invite_email, $tmp_invite_message) {
 	$message_content = $invite_message_content;
 	$message_content = str_replace( "SITE_NAME", $current_site->site_name, $message_content );
 	$message_content = str_replace( "SITE_URL", 'http://' . $current_site->domain . '', $message_content );
-	$message_content = str_replace( "SIGNUP_URL", 'http://' . $current_site->domain . '/wp-signup.php', $message_content );
+	$message_content = str_replace( "SIGNUP_URL", 'http://' . $current_site->domain . '/wp-login.php?action=register', $message_content );
 	$message_content = str_replace( "USERNAME", $tmp_username, $message_content );
 	$message_content = str_replace( "USER_EMAIL", $tmp_user_email, $message_content );
 	$message_content = str_replace( "INVITE_EMAIL", $tmp_invite_email, $message_content );
@@ -125,15 +125,15 @@ function invite_send_email($tmp_invite_email, $tmp_invite_message) {
 function invite_gateway_encrypt($data) {
 	if(!isset($chars))
 	{
-	// 3 different symbols (or combinations) for obfuscation
-	// these should not appear within the original text
-	$sym = array('¶', '¥xQ', '|');
-	
-	foreach(range('a','z') as $key=>$val)
-	$chars[$val] = str_repeat($sym[0],($key + 1)).$sym[1];
-	$chars[' '] = $sym[2];
-	
-	unset($sym);
+		// 3 different symbols (or combinations) for obfuscation
+		// these should not appear within the original text
+		$sym = array('¶', '¥xQ', '|');
+		
+		foreach(range('a','z') as $key=>$val)
+			$chars[$val] = str_repeat($sym[0],($key + 1)).$sym[1];
+		$chars[' '] = $sym[2];
+		
+		unset($sym);
 	}
 	
 	// encrypt
