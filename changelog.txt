@@ -7,7 +7,8 @@ Change Log:
 
 1.1.1 - 06/04/2011
 ----------------------------------------------------------------------
-- Switch to wp-login.php?action=register
+- Switch wp-signup.php to wp-login.php?action=register for compatibility
+- Fixed: Sign up link broken when site/network url is not the document root
 
 1.1.0 - 01/08/2011
 ----------------------------------------------------------------------

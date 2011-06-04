@@ -90,7 +90,7 @@ function invite_send_email($tmp_invite_email, $tmp_invite_message) {
 	$message_content = $invite_message_content;
 	$message_content = str_replace( "SITE_NAME", $current_site->site_name, $message_content );
 	$message_content = str_replace( "SITE_URL", 'http://' . $current_site->domain . '', $message_content );
-	$message_content = str_replace( "SIGNUP_URL", 'http://' . $current_site->domain . '/wp-login.php?action=register', $message_content );
+	$message_content = str_replace( "SIGNUP_URL", network_home_url('wp-login.php?action=register'), $message_content );
 	$message_content = str_replace( "USERNAME", $tmp_username, $message_content );
 	$message_content = str_replace( "USER_EMAIL", $tmp_user_email, $message_content );
 	$message_content = str_replace( "INVITE_EMAIL", $tmp_invite_email, $message_content );
