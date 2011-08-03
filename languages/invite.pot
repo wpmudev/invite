@@ -1,4 +1,4 @@
-# Translation of the WordPress plugin Invite 1.1.0 by S H Mohanjith (Incsub), Andrew Billits (Incsub).
+# Translation of the WordPress plugin Invite 1.1.1 by S H Mohanjith (Incsub), Andrew Billits (Incsub).
 # Copyright (C) 2011 S H Mohanjith (Incsub), Andrew Billits (Incsub)
 # This file is distributed under the same license as the Invite package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Invite 1.1.0\n"
+"Project-Id-Version: Invite 1.1.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/invite\n"
-"POT-Creation-Date: 2011-01-08 18:20+0530\n"
+"POT-Creation-Date: 2011-08-03 08:37+0530\n"
 "PO-Revision-Date: 2011-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,109 +17,153 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: invite.php:81
+#: invite.php:77
+msgid "The Invite plugin is only compatible with WordPress Multisite."
+msgstr ""
+
+#: invite.php:85
 msgid "Invites"
 msgstr ""
 
-#: invite.php:160
+#: invite.php:89 invite.php:167
+msgid "Invite Settings"
+msgstr ""
+
+#: invite.php:171
+msgid "Invitation Message Subject"
+msgstr ""
+
+#: invite.php:175
+msgid "You can use following variables SITE_NAME"
+msgstr ""
+
+#: invite.php:179
+msgid "Invitation Message Content"
+msgstr ""
+
+#: invite.php:184
+msgid ""
+"You can use following variables SITE_NAME,SITE_URL,SIGNUP_URL,USERNAME,"
+"USER_EMAIL,INVITE_EMAIL\""
+msgstr ""
+
+#: invite.php:189
+msgid "Save Changes"
+msgstr ""
+
+#: invite.php:200
+msgid "Settings saved."
+msgstr ""
+
+#: invite.php:219
 msgid "Send Invites"
 msgstr ""
 
-#: invite.php:161
+#: invite.php:220
 msgid "Send your colleagues and friends an invitation to signup at"
 msgstr ""
 
-#: invite.php:166
+#: invite.php:225
 msgid "Do you use GMail, Hotmail, Lycos, MSN or Yahoo for email?"
 msgstr ""
 
-#: invite.php:166
+#: invite.php:225
 msgid "Click here"
 msgstr ""
 
-#: invite.php:166
+#: invite.php:225
 msgid ""
 "to easily import email addresses from those accounts (completely safely!)"
 msgstr ""
 
-#: invite.php:174
+#: invite.php:233
 msgid "Special Message:"
 msgstr ""
 
-#: invite.php:177
+#: invite.php:236
 msgid "Optional. Include a message with your invitations."
 msgstr ""
 
-#: invite.php:180
+#: invite.php:239
 msgid "Email Addresses:"
 msgstr ""
 
-#: invite.php:187
+#: invite.php:246
 msgid ""
 "Place a comma between each email address (ex john@site.com, bob@site.com)."
 msgstr ""
 
-#: invite.php:192
+#: invite.php:251
 msgid "Send Invite(s)"
 msgstr ""
 
-#: invite.php:200 invite.php:265
+#: invite.php:259 invite.php:324
 msgid "Import Contacts"
 msgstr ""
 
-#: invite.php:217
+#: invite.php:276
 msgid "Import a list of your contacts from your web-based email account."
 msgstr ""
 
-#: invite.php:218
+#: invite.php:277
 msgid "After this you can choose which ones you want to send invites too."
 msgstr ""
 
-#: invite.php:222
+#: invite.php:281
 msgid "Sevice:"
 msgstr ""
 
-#: invite.php:231
+#: invite.php:290
 msgid "Please choose your email service."
 msgstr ""
 
-#: invite.php:234
+#: invite.php:293
 msgid "Email:"
 msgstr ""
 
-#: invite.php:237
+#: invite.php:296
 msgid "ex: john@hotmail.com"
 msgstr ""
 
-#: invite.php:240
+#: invite.php:299
 msgid "Password:"
 msgstr ""
 
-#: invite.php:248
+#: invite.php:307
 msgid "Import Email Addresses"
 msgstr ""
 
-#: invite.php:256
+#: invite.php:315
 msgid "This feature is temporarily unavaiable."
 msgstr ""
 
-#: invite.php:292
+#: invite.php:351
 msgid ""
 "There was a problem while trying to import your contacts. Please check your "
 "information and try again. <a href=\"users.php?"
 "page=invite_main&action=importer\">Click here</a> to try again."
 msgstr ""
 
-#: invite.php:296
+#: invite.php:355
 msgid "Email addresses successfully imported!"
 msgstr ""
 
-#: invite.php:301
+#: invite.php:360
 msgid "Continue"
 msgstr ""
 
-#: invite.php:315
+#: invite.php:374
 msgid "Sending Invite(s)!"
+msgstr ""
+
+#: invite.php:400
+msgid ""
+"Please install the latest version of <a href=\"http://premium.wpmudev.org/"
+"project/update-notifications/\" title=\"Download Now &raquo;\">our free "
+"Update Notifications plugin</a> which helps you stay up-to-date with the "
+"most stable, secure versions of WPMU DEV themes and plugins. <a href="
+"\"http://premium.wpmudev.org/wpmu-dev/update-notifications-plugin-"
+"information/\">More information &raquo;</a>"
 msgstr ""
 
 #. Plugin Name of the plugin/theme

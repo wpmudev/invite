@@ -4,7 +4,7 @@ Plugin Name: Invite
 Plugin URI: http://premium.wpmudev.org/project/invite
 Description: Allow your users to invite - via email - their friends and colleagues to check out their blog and sign up at your site!
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.1.1
+Version: 1.1.2
 Author URI:
 WDP ID: 9
 Network: true
@@ -30,10 +30,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //------------------------------------------------------------------------//
 //---Config---------------------------------------------------------------//
 //------------------------------------------------------------------------//
+global $invite_message_subject, $invite_message_content;
 
-$invite_message_subject = "SITE_NAME Invite";
+$invite_message_subject = get_site_option("invite_message_subject", "SITE_NAME Invite");
 
-$invite_message_content = "Dear INVITE_EMAIL,
+$invite_message_content = get_site_option("invite_message_content", "Dear INVITE_EMAIL,
 
 USER_EMAIL has sent you an invite to sign up at SITE_NAME - SITE_URL.
 
@@ -46,7 +47,7 @@ We are looking forward to seeing you on the site.
 
 Cheers,
 
---The Team @ SITE_NAME";
+--The Team @ SITE_NAME");
 
 /*
 The following option allows users to import emails from their address book on their Hotmail, MSN, etc email accoints.
@@ -62,7 +63,7 @@ $invite_incsub_authcode = "";
 //------------------------------------------------------------------------//
 
 add_action('admin_menu', 'invite_plug_pages');
-add_action('network_admin_menu', 'invite_plug_pages');
+add_action('network_admin_menu', 'invite_plug_network_pages');
 add_action('init', 'invite_init');
 
 //------------------------------------------------------------------------//
@@ -70,15 +71,22 @@ add_action('init', 'invite_init');
 //------------------------------------------------------------------------//
 
 function invite_init() {
-	if ( !is_multisite() )
-		exit( 'The Invite plugin is only compatible with WordPress Multisite.' );
-		
-	load_plugin_textdomain('invite', false, dirname(plugin_basename(__FILE__)).'/languages');
+	global $invite_message_subject, $invite_message_content;
+	
+	if ( !is_multisite() ) {
+		exit( __('The Invite plugin is only compatible with WordPress Multisite.', 'invite') );
+	}
+	
+	load_plugin_textdomain('invite', false, 'invite/languages');
 }
 
 function invite_plug_pages() {
 	global $wpdb, $wp_roles, $current_user;
-	add_submenu_page('users.php', __('Invites', 'invite'), __('Invites', 'invite'), 1, 'invite_main', 'invite_page_main_output');
+	add_submenu_page('users.php', __('Invites', 'invite'), __('Invites', 'invite'), 'read', 'invite_main', 'invite_page_main_output');
+}
+
+function invite_plug_network_pages() {
+	add_submenu_page('settings.php', __('Invite Settings', 'invite'), __('Invite Settings', 'invite'), 'manage_site_options', 'invite_settings', 'invite_settings_page_output');
 }
 
 function invite_send_email($tmp_invite_email, $tmp_invite_message) {
@@ -146,6 +154,57 @@ function invite_gateway_encrypt($data) {
 //---Page Output Functions------------------------------------------------//
 //------------------------------------------------------------------------//
 
+function invite_settings_page_output() {
+	global $wpdb, $wp_roles, $current_user, $current_site, $invite_contact_importer, $invite_incsub_gateway, $invite_incsub_authcode, $invite_incsub_gateway_encryption,  $invite_message_subject, $invite_message_content, $invite_from_email;
+	if (isset($_GET['updated'])) {
+		?><div id="message" class="updated fade"><p><?php _e(urldecode($_GET['updatedmsg']), 'invite') ?></p></div><?php
+	}
+	echo '<div class="wrap">';
+	switch( $_GET[ 'action' ] ) {
+		//---------------------------------------------------//
+		default:
+			?>
+			<h2><?php _e('Invite Settings', 'invite') ?></h2>
+            <form method="post" action="settings.php?page=invite_settings&action=process">
+            <table class="form-table">
+		<tr valign="top">
+		    <th scope="row"><?php _e('Invitation Message Subject', 'invite') ?></th>
+		    <td>
+			<input name="invite_message_subject" id="invite_message_subject"
+			value="<?php print $invite_message_subject; ?>" />
+			<br /><?php _e('You can use following variables SITE_NAME', 'invite') ?>
+		    </td>
+		</tr>
+		<tr valign="top">
+		    <th scope="row"><?php _e('Invitation Message Content', 'invite') ?></th>
+		    <td>
+			<textarea name="invite_message_content"
+				id="invite_message_content"
+				rows="16" cols="40"><?php print $invite_message_content; ?></textarea>
+			<br /><?php _e('You can use following variables SITE_NAME,SITE_URL,SIGNUP_URL,USERNAME,USER_EMAIL,INVITE_EMAIL"', 'invite') ?>
+		    </td>
+		</tr>
+            </table>
+            <p class="submit">
+            <input type="submit" name="Submit" value="<?php _e('Save Changes', 'subscribe-by-email') ?>" />
+            </p>
+            </form>
+			<?php
+		break;
+		//---------------------------------------------------//
+		case "process":
+			update_site_option( "invite_message_subject", $_POST[ 'invite_message_subject' ] );
+			update_site_option( "invite_message_content", $_POST[ 'invite_message_content' ] );
+			echo "
+			<script type='text/javascript'>
+			window.location='settings.php?page=invite_settings&updated=true&updatedmsg=" . urlencode(__('Settings saved.', 'invite')) . "';
+			</script>
+			";
+		break;
+	}
+	echo '</div>';
+}
+
 function invite_page_main_output() {
 	global $wpdb, $wp_roles, $current_user, $current_site, $invite_contact_importer, $invite_incsub_gateway, $invite_incsub_authcode, $invite_incsub_gateway_encryption;
 
@@ -158,7 +217,7 @@ function invite_page_main_output() {
 		default:
 		?>
 			<h2><?php _e('Send Invites', 'invite') ?></h2>
-            <P><?php _e('Send your colleagues and friends an invitation to signup at', 'invite') ?> <?php echo $current_site->site_name; ?>
+            <p><?php _e('Send your colleagues and friends an invitation to signup at', 'invite') ?> <?php echo $current_site->site_name; ?>
             <?php
             if ($invite_contact_importer == "enabled"){
                 ?>
@@ -167,7 +226,7 @@ function invite_page_main_output() {
                 <?php
             }
             ?>
-            </P> 
+            </p> 
             <form method="post" action="users.php?page=invite_main&action=process">
             <table class="form-table">
             <tr valign="top">
