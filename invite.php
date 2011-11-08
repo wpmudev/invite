@@ -8,6 +8,7 @@ Version: 1.1.2
 Author URI:
 WDP ID: 9
 Network: true
+Text Domain: invite
 */
 
 /* 
