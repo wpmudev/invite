@@ -4,7 +4,7 @@ Plugin Name: Invite
 Plugin URI: http://premium.wpmudev.org/project/invite
 Description: Allow your users to invite - via email - their friends and colleagues to check out their blog and sign up at your site!
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.1.2
+Version: 1.1.3
 Author URI:
 WDP ID: 9
 Network: true
@@ -181,7 +181,7 @@ function invite_settings_page_output() {
 		    <td>
 			<textarea name="invite_message_content"
 				id="invite_message_content"
-				rows="16" cols="40"><?php print $invite_message_content; ?></textarea>
+				rows="14" cols="70"><?php print $invite_message_content; ?></textarea>
 			<br /><?php _e('You can use following variables SITE_NAME,SITE_URL,SIGNUP_URL,USERNAME,USER_EMAIL,INVITE_EMAIL"', 'invite') ?>
 		    </td>
 		</tr>
@@ -194,8 +194,8 @@ function invite_settings_page_output() {
 		break;
 		//---------------------------------------------------//
 		case "process":
-			update_site_option( "invite_message_subject", $_POST[ 'invite_message_subject' ] );
-			update_site_option( "invite_message_content", $_POST[ 'invite_message_content' ] );
+			update_site_option( "invite_message_subject", stripcslashes($_POST[ 'invite_message_subject' ]) );
+			update_site_option( "invite_message_content", stripcslashes($_POST[ 'invite_message_content' ]) );
 			echo "
 			<script type='text/javascript'>
 			window.location='settings.php?page=invite_settings&updated=true&updatedmsg=" . urlencode(__('Settings saved.', 'invite')) . "';
@@ -380,7 +380,7 @@ function invite_page_main_output() {
 			
 			echo "
 			<SCRIPT LANGUAGE='JavaScript'>
-			window.location='users.php?page=invite_main&updated=true&updatedmsg=" . urlencode('Invite(s) Sent.') . "';
+			window.location='users.php?page=invite_main&updated=true&updatedmsg=" . urlencode(__('Invite(s) sent.', 'invite')) . "';
 			</script>
 			";
 		break;
