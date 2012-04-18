@@ -4,7 +4,7 @@ Plugin Name: Invite
 Plugin URI: http://premium.wpmudev.org/project/invite
 Description: Allow your users to invite - via email - their friends and colleagues to check out their blog and sign up at your site!
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.1.3
+Version: 1.1.4
 Author URI:
 WDP ID: 9
 Network: true
@@ -91,16 +91,21 @@ function invite_plug_network_pages() {
 }
 
 function invite_send_email($tmp_invite_email, $tmp_invite_message) {
-	global $wpdb, $wp_roles, $current_user, $user_ID, $current_site, $invite_message_subject, $invite_message_content, $invite_from_email;
+	global $wpdb, $wp_roles, $current_user, $user_ID, $current_site, $current_blog, $invite_message_subject, $invite_message_content, $invite_from_email;
 
-	$tmp_username =  $wpdb->get_var("SELECT user_login FROM " . $wpdb->users . " WHERE ID = '" . $user_ID . "'");
-	$tmp_user_email =  $wpdb->get_var("SELECT user_email FROM " . $wpdb->users . " WHERE ID = '" . $user_ID . "'");
-
+	$tmp_userdetails = get_userdata($user_ID);
+	$tmp_username = $tmp_userdetails->user_login; // $wpdb->get_var("SELECT user_login FROM " . $wpdb->users . " WHERE ID = '" . $user_ID . "'");
+	$tmp_user_email = $tmp_userdetails->user_email;// $wpdb->get_var("SELECT user_email FROM " . $wpdb->users . " WHERE ID = '" . $user_ID . "'");
+	$tmp_displayname = $tmp_userdetails->display_name ;
+	
 	$message_content = $invite_message_content;
 	$message_content = str_replace( "SITE_NAME", $current_site->site_name, $message_content );
 	$message_content = str_replace( "SITE_URL", 'http://' . $current_site->domain . '', $message_content );
+	$message_content = str_replace( "BLOG_NAME", get_bloginfo('name'), $message_content );
+	$message_content = str_replace( "BLOG_URL", get_bloginfo('url'), $message_content );
 	$message_content = str_replace( "SIGNUP_URL", network_home_url('wp-login.php?action=register'), $message_content );
 	$message_content = str_replace( "USERNAME", $tmp_username, $message_content );
+	$message_content = str_replace( "DISPLAY_NAME", $tmp_displayname, $message_content );
 	$message_content = str_replace( "USER_EMAIL", $tmp_user_email, $message_content );
 	$message_content = str_replace( "INVITE_EMAIL", $tmp_invite_email, $message_content );
 	$message_content = str_replace( "\'", "'", $message_content );
