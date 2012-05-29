@@ -59,6 +59,10 @@ $invite_incsub_gateway_encryption = "on"; //options: "on" OR "off"
 $invite_incsub_gateway = "http://gateway.wpmudev.org";
 $invite_incsub_authcode = "";
 
+if ( !is_multisite() ) {
+	die( __('The Invite plugin is only compatible with WordPress Multisite.', 'invite') );
+}
+	
 //------------------------------------------------------------------------//
 //---Hook-----------------------------------------------------------------//
 //------------------------------------------------------------------------//
@@ -73,10 +77,6 @@ add_action('init', 'invite_init');
 
 function invite_init() {
 	global $invite_message_subject, $invite_message_content;
-	
-	if ( !is_multisite() ) {
-		exit( __('The Invite plugin is only compatible with WordPress Multisite.', 'invite') );
-	}
 	
 	load_plugin_textdomain('invite', false, 'invite/languages');
 }
