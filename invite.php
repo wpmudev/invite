@@ -4,14 +4,14 @@ Plugin Name: Invite
 Plugin URI: http://premium.wpmudev.org/project/invite
 Description: Allow your users to invite - via email - their friends and colleagues to check out their blog and sign up at your site!
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.1.4
+Version: 1.1.5
 Author URI:
 WDP ID: 9
 Network: true
 Text Domain: invite
 */
 
-/* 
+/*
 Copyright 2007-2009 Incsub (http://incsub.com)
 
 This program is free software; you can redistribute it and/or modify
@@ -27,6 +27,10 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
+global $wpmudev_notices;
+$wpmudev_notices[] = array( 'id'=> 9, 'name'=> 'Invite', 'screens' => array( 'settings_page_invite_settings-network', 'users_page_invite_main' ) );
+include_once(plugin_dir_path( __FILE__ ).'external/dash-notice/wpmudev-dash-notification.php');
 
 //------------------------------------------------------------------------//
 //---Config---------------------------------------------------------------//
@@ -62,7 +66,7 @@ $invite_incsub_authcode = "";
 if ( !is_multisite() ) {
 	die( __('The Invite plugin is only compatible with WordPress Multisite.', 'invite') );
 }
-	
+
 //------------------------------------------------------------------------//
 //---Hook-----------------------------------------------------------------//
 //------------------------------------------------------------------------//
@@ -77,7 +81,7 @@ add_action('init', 'invite_init');
 
 function invite_init() {
 	global $invite_message_subject, $invite_message_content;
-	
+
 	load_plugin_textdomain('invite', false, 'invite/languages');
 }
 
@@ -97,7 +101,7 @@ function invite_send_email($tmp_invite_email, $tmp_invite_message) {
 	$tmp_username = $tmp_userdetails->user_login; // $wpdb->get_var("SELECT user_login FROM " . $wpdb->users . " WHERE ID = '" . $user_ID . "'");
 	$tmp_user_email = $tmp_userdetails->user_email;// $wpdb->get_var("SELECT user_email FROM " . $wpdb->users . " WHERE ID = '" . $user_ID . "'");
 	$tmp_displayname = $tmp_userdetails->display_name ;
-	
+
 	$message_content = $invite_message_content;
 	$message_content = str_replace( "SITE_NAME", $current_site->site_name, $message_content );
 	$message_content = str_replace( "SITE_URL", 'http://' . $current_site->domain . '', $message_content );
@@ -115,7 +119,7 @@ function invite_send_email($tmp_invite_email, $tmp_invite_message) {
 	} else {
 		$message_content = str_replace( "INVITE_MESSAGE", '"' . $tmp_invite_message . '"', $message_content );
 	}
-	
+
 	$subject_content = $invite_message_subject;
 	$subject_content = str_replace( "SITE_NAME", $current_site->site_name, $subject_content );
 
@@ -131,7 +135,7 @@ function invite_send_email($tmp_invite_email, $tmp_invite_message) {
 	} else {
 		$from_email = $admin_email;
 	}
-	
+
 	$message_headers = "MIME-Version: 1.0\n" . "From: " . get_site_option( "site_name" ) .  " <{$from_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
 	wp_mail($tmp_invite_email, $subject_content, $message_content, $message_headers);
 }
@@ -142,18 +146,18 @@ function invite_gateway_encrypt($data) {
 		// 3 different symbols (or combinations) for obfuscation
 		// these should not appear within the original text
 		$sym = array('¶', '¥xQ', '|');
-		
+
 		foreach(range('a','z') as $key=>$val)
 			$chars[$val] = str_repeat($sym[0],($key + 1)).$sym[1];
 		$chars[' '] = $sym[2];
-		
+
 		unset($sym);
 	}
-	
+
 	// encrypt
 	$data = strtr(strtolower($data), $chars);
 	return $data;
-	
+
 }
 
 //------------------------------------------------------------------------//
@@ -176,7 +180,7 @@ function invite_settings_page_output() {
 		<tr valign="top">
 		    <th scope="row"><?php _e('Invitation Message Subject', 'invite') ?></th>
 		    <td>
-			<input name="invite_message_subject" id="invite_message_subject"
+			<input type="text" class="regular-text" name="invite_message_subject" id="invite_message_subject"
 			value="<?php print $invite_message_subject; ?>" />
 			<br /><?php _e('You can use following variables SITE_NAME', 'invite') ?>
 		    </td>
@@ -192,7 +196,7 @@ function invite_settings_page_output() {
 		</tr>
             </table>
             <p class="submit">
-            <input type="submit" name="Submit" value="<?php _e('Save Changes', 'subscribe-by-email') ?>" />
+            <input class="button button-primary" type="submit" name="Submit" value="<?php _e('Save Changes', 'subscribe-by-email') ?>" />
             </p>
             </form>
 			<?php
@@ -232,7 +236,7 @@ function invite_page_main_output() {
                 <?php
             }
             ?>
-            </p> 
+            </p>
             <form method="post" action="users.php?page=invite_main&action=process">
             <table class="form-table">
             <tr valign="top">
@@ -252,9 +256,9 @@ function invite_page_main_output() {
             <br /><?php _e('Place a comma between each email address (ex john@site.com, bob@site.com).', 'invite') ?></td>
             </tr>
             </table>
-            
+
             <p class="submit">
-            <input type="submit" name="Submit" value="<?php _e('Send Invite(s)', 'invite') ?>" />
+            <input class="button button-primary" type="submit" name="Submit" value="<?php _e('Send Invite(s)', 'invite') ?>" />
             </p>
             </form>
 		<?php
@@ -308,7 +312,7 @@ function invite_page_main_output() {
             <br /><?php //_e('') ?></td>
             </tr>
             </table>
-            
+
             <p class="submit">
             <input type="submit" name="Submit" value="<?php _e('Import Email Addresses', 'invite') ?>" />
             </p>
@@ -336,7 +340,7 @@ function invite_page_main_output() {
 			if ($invite_incsub_gateway_encryption == 'on'){
 				$tmp_invite_password = invite_gateway_encrypt($tmp_invite_password);
 				$tmp_invite_email = invite_gateway_encrypt($tmp_invite_email);
-				
+
 				$tmp_curl_url = $invite_incsub_gateway . '/invite/?auth_code=' . $invite_incsub_authcode . '&username=' . urlencode($tmp_invite_email) . '&password=' . urlencode($tmp_invite_password) . '&service=' . $tmp_invite_service . '&encryption=on';
 			} else {
 				$tmp_curl_url = $invite_incsub_gateway . '/invite/?auth_code=' . $invite_incsub_authcode . '&username=' . $tmp_invite_email . '&password=' . $tmp_invite_password . '&service=' . $tmp_invite_service . '&encryption=off';
@@ -361,7 +365,7 @@ function invite_page_main_output() {
                 <p><?php _e('Email addresses successfully imported!', 'invite') ?></p>
                 <form method="post" action="users.php?page=invite_main">
 				<input name="invite_imported_emails" type="hidden" id="invite_imported_emails"value="<?php echo $tmp_email_data; ?>"/>
-                
+
                 <p class="submit">
                 <input type="submit" name="Submit" value="<?php _e('Continue', 'invite') ?>" />
                 </p>
@@ -382,7 +386,7 @@ function invite_page_main_output() {
 			foreach ($tmp_invite_emails_array as $tmp_email){
 				invite_send_email($tmp_email, $tmp_invite_message);
 			}
-			
+
 			echo "
 			<SCRIPT LANGUAGE='JavaScript'>
 			window.location='users.php?page=invite_main&updated=true&updatedmsg=" . urlencode(__('Invite(s) sent.', 'invite')) . "';
@@ -395,14 +399,4 @@ function invite_page_main_output() {
 		//---------------------------------------------------//
 	}
 	echo '</div>';
-}
-
-if ( !function_exists( 'wdp_un_check' ) ) {
-	add_action( 'admin_notices', 'wdp_un_check', 5 );
-	add_action( 'network_admin_notices', 'wdp_un_check', 5 );
-
-	function wdp_un_check() {
-		if ( !class_exists( 'WPMUDEV_Update_Notifications' ) && current_user_can( 'edit_users' ) )
-			echo '<div class="error fade"><p>' . __('Please install the latest version of <a href="http://premium.wpmudev.org/project/update-notifications/" title="Download Now &raquo;">our free Update Notifications plugin</a> which helps you stay up-to-date with the most stable, secure versions of WPMU DEV themes and plugins. <a href="http://premium.wpmudev.org/wpmu-dev/update-notifications-plugin-information/">More information &raquo;</a>', 'wpmudev') . '</a></p></div>';
-	}
 }
