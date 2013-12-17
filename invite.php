@@ -4,8 +4,8 @@ Plugin Name: Invite
 Plugin URI: http://premium.wpmudev.org/project/invite
 Description: Allow your users to invite - via email - their friends and colleagues to check out their blog and sign up at your site!
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.1.5
-Author URI:
+Version: 1.1.3.1
+Author URI: http://premium.wpmudev.org
 WDP ID: 9
 Network: true
 Text Domain: invite
@@ -27,10 +27,6 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
-global $wpmudev_notices;
-$wpmudev_notices[] = array( 'id'=> 9, 'name'=> 'Invite', 'screens' => array( 'settings_page_invite_settings-network', 'users_page_invite_main' ) );
-include_once(plugin_dir_path( __FILE__ ).'external/dash-notice/wpmudev-dash-notification.php');
 
 //------------------------------------------------------------------------//
 //---Config---------------------------------------------------------------//
@@ -400,3 +396,7 @@ function invite_page_main_output() {
 	}
 	echo '</div>';
 }
+
+global $wpmudev_notices;
+$wpmudev_notices[] = array( 'id'=> 9, 'name'=> 'Invite', 'screens' => array( 'settings_page_invite_settings-network', 'users_page_invite_main' ) );
+include_once(plugin_dir_path( __FILE__ ).'external/dash-notice/wpmudev-dash-notification.php');
