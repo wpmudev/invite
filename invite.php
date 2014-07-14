@@ -3,7 +3,7 @@
 Plugin Name: Invite
 Plugin URI: http://premium.wpmudev.org/project/invite
 Description: Allow your users to invite - via email - their friends and colleagues to check out their blog and sign up at your site!
-Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
+Author: WPMU DEV
 Version: 1.1.3.1
 Author URI: http://premium.wpmudev.org
 WDP ID: 9
@@ -13,6 +13,8 @@ Text Domain: invite
 
 /*
 Copyright 2007-2009 Incsub (http://incsub.com)
+Author - S H Mohanjith (Incsub)
+Contributors - Andrew Billits (Incsub)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License (Version 2 - GPLv2) as published by
